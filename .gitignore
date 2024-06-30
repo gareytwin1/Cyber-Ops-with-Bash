@@ -1,0 +1,8 @@
+# Ignore log files
+*.log
+
+# Ignore evironment files
+*.evn
+
+# Ignore all hidden files
+*.
