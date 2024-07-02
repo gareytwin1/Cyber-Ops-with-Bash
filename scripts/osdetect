@@ -6,11 +6,9 @@
 # Usage: bash osdetect.sh
 #   output will be one of: Linux MSWin MacOS
 
-if type -t wevutil &> /dev/null
-then
+if type -t wevutil &> /dev/null; then
    OS=MSWin
-elif type -t scutil &> /dev/null
-then
+elif type -t scutil &> /dev/null; then
    OS=MacOS
 else
    OS=Linux

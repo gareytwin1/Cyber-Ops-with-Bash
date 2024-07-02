@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Description:
 # Gathers general system information and dumps it to a file
@@ -54,7 +54,7 @@ function DumpInfo()
    printf "</systeminfo>\n"
 }
 
-OSTYPE=$(./osdetect.sh)
+OSTYPE=$(./osdetect)
 HOSTNM=$(hostname)
 TMPFILE="${HOSTNM}.info"
 
