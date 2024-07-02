@@ -26,9 +26,7 @@ mkabspath(){
 
 find $DIR -type f | while read fn; do
     THISONE=$(sha1sum "$fn")
-    printf "%s" $THISONE
     THISONE=${THISONE%% *}
-    printf "%s" $THISONE 
     if [[ $THISONE == $HASH ]]; then
         mkabspath "$fn"
         echo $ABS
