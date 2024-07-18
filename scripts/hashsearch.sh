@@ -16,7 +16,7 @@ HASH=$1
 DIR=${2:-.}     # default is here, cwd
 
 # convert pathname into an absolute path
-mkabspath(){
+function mkabspath{
     if [[ $1 == /* ]]; then
         ABS=$1
     else
