@@ -8,6 +8,7 @@
 # Usage: 
 # <output from other script or program> | bash livebar.sh
 #
+
 function usage(){
     echo "Usage: $0 [-M max_value] <inputfile>"
     echo "  M: Maximum value to scale histogram between 0 and 61"
