@@ -10,7 +10,7 @@
 # returns 1 (false) if it finds a match
 # returns 0 (true) if there is no match
 
-function mismatch(){
+mismatch(){
     local -i i
     for((i=0; i<$KNSIZE; i++)); do
         [[ "$1" =~ .*${KNOWN[$i]}.* ]] && return 1
@@ -19,36 +19,43 @@ function mismatch(){
 }
 
 usage(){
-    echo "Usage: $0 [-f] <input file>" >&2
-    return 1;
+    echo "Usage: $0 [-u] <useragent file> [-f] <access log file>" >&2
+    exit 1;
 }
 
-while getopts f: opt; do
+while getopts u:f: opt; do
     case $opt in
-        f)
-            if ! [-f $OPTARG]; then
-                usage 
-            fi 
-            readarray -t KNOWN < $OPTARG ;;
-       \?)  
+        u)
+            known_agents=$OPTARG
+            ;;
+
+        f)  file=$OPTARG
+           ;;
+
+        *)  
            usage ;;
     esac
 done
-shift = $((OPTIND -1))
+shift=$((OPTIND -1))
 
-if [ $# -lt 2 ]; then
-    readarray -t KNOWN < "$HOME/Projects/Practice/bash_scripts/files/useragents.txt"
+if ! [ -f $file ]; then
+    echo "File not found: ${file}. Try using access.log" >&2
+    usage
 fi
 
-KNSIZE=${#KNOWN[@]}
-for item in "${KNOWN[@]}"; do
-    echo "$item"
-done
+if [ ! -f $known_agents ]; then
+    echo "Know agents file not found: $known_agents. Try using useragents.txt" >&2
+    usage
+fi
 
-# preprocess logfile (stdin) to pick out ipaddr and user agents
-awk -F'"' '{print $1, $6}' |\
-while read ipaddr dash1 dash2 dtstamp delta useragent; do
+readarray -t KNOWN < "$known_agents"
+
+
+KNSIZE=${#KNOWN[@]}
+
+awk -F'"' '{print $1, $6}' $file | while read ipaddr dash1 dash2 dtstamp delta useragent; do
     if mismatch "$useragent"; then
-        echo "${RED}anomaly: $ipaddr $useragent${NORMAL}" 
+        echo "${RED}Anomaly: $ipaddr $useragent${NORMAL}" 
     fi
-done
+done 
+
