@@ -23,7 +23,7 @@ log_file=${1:-log.file}
 if [[ ! -f "$log_file" ]]; then
     echo "Error: Log file '$log_file' does not exist."
     exit 1
-fi
+    fi
 
 # Enable lastpipe option
 shopt -s lastpipe
