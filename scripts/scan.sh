@@ -9,11 +9,14 @@
 
 function scan(){
     host=$1
-    printf '%s' "$host"
-    for ((port=1;port<1024;port++)); do
+    printf '%s' "${host}"
+    for port in {1..1024}; do
         # order of redirects is important for 2 reasons
+        # echo "Checking ${host}:${port}"
         echo >/dev/null 2>&1 < /dev/tcp/${host}/${port}
-        if (($? == 0)); then printf ' %d' "${port}"; fi
+        if (($? == 0)); then 
+            printf ' %d' "${port}" 
+        fi
     done
     echo '\n'
 }
