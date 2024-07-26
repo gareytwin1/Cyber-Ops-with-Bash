@@ -24,6 +24,10 @@ function dosumming(){
 # ==================================
 # Main
 
+# Capture the start time
+START_TIME=$(date +%s)
+
+
 declare -a DIR
 
 # ------------ parse the arguments
@@ -109,3 +113,11 @@ for FN in "${!INUSE[@]}"; do
     fi
 done
 printf '</filesystem>\n'
+
+# Capture the end time
+END_TIME=$(date +%s)
+
+# Calculate the elapsed time
+DURATION=$((END_TIME - START_TIME))
+
+echo "Elapsed time: $DURATION seconds"
