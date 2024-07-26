@@ -37,6 +37,7 @@ shift $((OPTIND-1))
 # no arguments? too many?
 (( $# == 0 || $# > 2)) && usageErr
 
+# if no directory specified, use root
 (( ${#DIR[*]} == 0 )) && DIR=( "/" )
 
 # create either a baseline (only 1 filename provided)
@@ -65,8 +66,8 @@ if [[ ! -e "$B2ND" ]]; then
     dosumming > "$B2ND"
 fi
 
-# no we have: 2 files created by sha1sum
-declare -A BYPATH BYHAS INUSE # assoc. arrays
+# now we have: 2 files created by sha1sum
+declare -A BYPATH BYHASH INUSE # assoc. arrays
 
 # load up the first file as the baseline
 while read HNUM FN; do
@@ -79,27 +80,27 @@ done < "$BASE"
 # see if each filename listed in the 2nd file is in 
 # the sample place (path) as in 1st (the baseline)
 
-printf '<filesystem host="%s" dir="%s">\n' "$HOSTNAME" "${DIR[*]}"
+printf '<filesystem host="%s" dir="%s">\n' "$(hostname)" "${DIR[*]}"
 
 while read HNUM FN; do
     WASHASH="${BYPATH[${FN}]}"
     # did it find one? if not, it will be null
-    if [[ -z $WASHASH ]]; then
+    if [[ -z $WASHASH ]]; then # new file
         ALTFN="${BYHASH[$HNUM]}"
-        if [[ -z $ALTFN ]]; then
+        if [[ -z $ALTFN ]]; then # new file
             printf '    <new>%s</new>\n' "$FN"
-        else
+        else    # relocated
             printf '    <relocated orig="%s">%s</relocated>\n' "$ALTFN" "$FN"
             INUSE["$ALTFN"]='_' # mark this as seen
         fi
     else
-        INUSE["$FN"]='_'    # mark this as seen
-        if [[ $HNUM == $WASHASH ]]; then
+        INUSE["$FN"]='_'    # mark this as seen, file exists in baseline
+        if [[ $HNUM == $WASHASH ]]; then    # no change
             continue;       # nothing changed
-        else
+        else    # changed
             printf '    <changed>%s</changed>\n' "$FN"
-        fi
-    fi
+        fi # end of hash comparison
+    fi # end of file comparison
 done < "$B2ND"
 
 for FN in "${!INUSE[@]}"; do
@@ -107,5 +108,4 @@ for FN in "${!INUSE[@]}"; do
         printf '    <removed>%s</removed>\n' "$FN"
     fi
 done
-
-printf '</filesystem>\n'`
+printf '</filesystem>\n'
