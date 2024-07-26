@@ -13,9 +13,8 @@
 
 
 function usageErr(){
-    echo 'Usage: baseline.sh [-d path] <file1> [<file2>] [-o <outputfile>]'
+    echo 'Usage: baseline.sh [-d path] <file1> [<file2>]'
     echo 'Creates or compares a baseline from path'
-    echo 'Creates output file in XML format'
     echo 'default for path is / or otherwise specified'
     exit 2
 } >&2
