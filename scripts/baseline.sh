@@ -6,13 +6,15 @@
 # Creates a file system baseline or compares current
 # file system to previous baseline
 #
-# Usage: ./baseline.sh [-d path] <file1> [<file2>]
+# Usage: ./baseline.sh [-d path] [-o <outputfile>] <file1> [<file2>] 
 # [<file 2>] Previous baseline file to compare
+# [<outputfile>] File to write output to
 #
 
 function usageErr(){
-    echo 'Usage: baseline.sh [-d path] <file1> [<file2>]'
+    echo 'Usage: baseline.sh [-d path] <file1> [<file2>] [-o <outputfile>]'
     echo 'Creates or compares a baseline from path'
+    echo 'Creates output file in XML format'
     echo 'default for path is / or otherwise specified'
     exit 2
 } >&2
@@ -36,11 +38,10 @@ START_TIME=$(date +%s)
 declare -a DIR
 convertToAbsolutePaths
 
-# ------------ parse the arguments# ------------ parse the arguments
+# Parse command-line options
 while getopts "d:" MYOPT; do
-    # no check for MYOPT since there is only one choice
-    DIR+=( "$OPTARG" )
-done
+     DIR+=( "$OPTARG" ) 
+done 
 shift $((OPTIND-1))
 
 # no arguments? too many?
@@ -53,6 +54,7 @@ shift $((OPTIND-1))
 # or a secondary summary (when two filenames are provided)
 BASE="$1"
 B2ND="$2"
+
 
 # IF only 1 file is provided, check if the file exist and prompt the
 # user to overwrite it if it does
@@ -99,7 +101,7 @@ done < "$BASE"
 # ------ now begin the output
 # see if each filename listed in the 2nd file is in 
 # the sample place (path) as in 1st (the baseline)
-
+# Open the output file
 
 printf '<filesystem host="%s" dir="%s">\n' "$(hostname)" "${DIR[*]}"
 
