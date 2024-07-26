@@ -19,7 +19,13 @@ function usageErr(){
 
 function dosumming(){
     find "${DIR[@]}" -type f 2>/dev/null | xargs -d '\n' sha1sum
-} >&2
+} 
+
+function convertToAbsolutePaths() {
+    for ((i=0; i<${#DIR[@]}; i++)); do
+        DIR[$i]=$(readlink -f ${DIR[$i]})
+    done
+}
 
 # ==================================
 # Main
@@ -27,11 +33,10 @@ function dosumming(){
 # Capture the start time
 START_TIME=$(date +%s)
 
-
 declare -a DIR
+convertToAbsolutePaths
 
-# ------------ parse the arguments
-
+# ------------ parse the arguments# ------------ parse the arguments
 while getopts "d:" MYOPT; do
     # no check for MYOPT since there is only one choice
     DIR+=( "$OPTARG" )
@@ -46,7 +51,6 @@ shift $((OPTIND-1))
 
 # create either a baseline (only 1 filename provided)
 # or a secondary summary (when two filenames are provided)
-
 BASE="$1"
 B2ND="$2"
 
@@ -66,13 +70,6 @@ if (( $# == 1 )); then
         dosumming > "$BASE"
         echo "Baseline file $BASE created."
     fi
-    exit
-fi
-
-if (( $# == 1)); then     # only 1 arg
-    # creating "$BASE"
-    dosumming > "$BASE"
-    # all done for baseline
     exit
 fi
 
@@ -103,6 +100,7 @@ done < "$BASE"
 # see if each filename listed in the 2nd file is in 
 # the sample place (path) as in 1st (the baseline)
 
+
 printf '<filesystem host="%s" dir="%s">\n' "$(hostname)" "${DIR[*]}"
 
 while read HNUM FN; do
@@ -124,7 +122,8 @@ while read HNUM FN; do
             printf '    <changed>%s</changed>\n' "$FN"
         fi # end of hash comparison
     fi # end of file comparison
-done < "$B2ND"
+done < "$B2ND" 
+
 
 for FN in "${!INUSE[@]}"; do
     if [[ "${INUSE[$FN]}" == 'X' ]]; then
