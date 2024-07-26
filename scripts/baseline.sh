@@ -18,8 +18,8 @@ function usageErr(){
 } >&2
 
 function dosumming(){
-    find "${DIR[@]}" -type f | xargs -d '\n' sha1sum
-}
+    find "${DIR[@]}" -type f 2>/dev/null | xargs -d '\n' sha1sum
+} >&2
 
 # ==================================
 # Main
@@ -50,6 +50,25 @@ shift $((OPTIND-1))
 BASE="$1"
 B2ND="$2"
 
+# IF only 1 file is provided, check if the file exist and prompt the
+# user to overwrite it if it does
+if (( $# == 1 )); then
+    if [[ -e "$BASE" ]]; then
+        read -p "The file $BASE already exists. Do you want to overwrite it? (y/n): " answer
+        if [[ $answer == "y" ]]; then
+            dosumming > "$BASE"
+            echo "Baseline file $BASE created."
+        else
+            echo "Operation cancelled. Exiting..."
+            exit 0
+        fi
+    else
+        dosumming > "$BASE"
+        echo "Baseline file $BASE created."
+    fi
+    exit
+fi
+
 if (( $# == 1)); then     # only 1 arg
     # creating "$BASE"
     dosumming > "$BASE"
@@ -66,7 +85,7 @@ fi
 # if 2nd file exists just compare the two
 # else create/fill it
 if [[ ! -e "$B2ND" ]]; then
-    echo creating "$B2ND"
+    echo Creating "$B2ND"
     dosumming > "$B2ND"
 fi
 
