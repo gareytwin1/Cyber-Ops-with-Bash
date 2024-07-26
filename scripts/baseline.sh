@@ -6,10 +6,11 @@
 # Creates a file system baseline or compares current
 # file system to previous baseline
 #
-# Usage: ./baseline.sh [-d path] [-o <outputfile>] <file1> [<file2>] 
+# Usage: ./baseline.sh [-d path] <file1> [<file2>] 
 # [<file 2>] Previous baseline file to compare
-# [<outputfile>] File to write output to
-#
+# 
+
+
 
 function usageErr(){
     echo 'Usage: baseline.sh [-d path] <file1> [<file2>] [-o <outputfile>]'
