@@ -6,12 +6,12 @@
 #
 
 # SMTP server configuration
-SMTP_SERVER="smtp.gmail.com"
-SMTP_PORT=465
+SMTP_SERVER="smtp.mail.com"
+SMTP_PORT=25
 
 # Email details
-FROM_EMAIL="gareytwin1@gmail.com"
-TO_EMAIL="gareytwin1@gmail.com"
+FROM_EMAIL="email@email.com"
+TO_EMAIL="email@email.com"
 SUBJECT="Test Email"
 BODY="This is a test email sent using /dev/tcp in bash."
 
