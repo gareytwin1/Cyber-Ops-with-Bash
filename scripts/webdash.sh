@@ -40,9 +40,9 @@ function prSection(){
     local -i i
     for((i==0; i<$1; i++)); do
         read aline
-        printf '%s%s\n' "$aline" "${ERASE2EOL}"
+        printf '%s%s\n' "$aline" "${ERAS2EOL}"
     done
-    printf '%s%s\n%s' "$DASHES" "${ERASE2EOL}" "${ERASE2EOL}"
+    printf '%s%s\n%s' "$DASHES" "${ERAS2EOL}" "${ERAS2EOL}"
 }
 
 function cleanup(){
@@ -68,15 +68,15 @@ while true; do
     | prSection 1
     #-------------------------------------
     {
-        printf 'connections: %4d\n          %s\n' \
+        printf 'connections:%4d\n          %s\n' \
             $(netstat -an |  grep 'ESTAB' | wc -l) "$(date)"
     } | prSection 1
     #-------------------------------------
-    tail -5 //var/log/syslog | cut -c 1-16,45-105 | prSection 5
+    tail -5 /var/log/syslog | cut -c 1-16,45-105 | prSection 5
     #-------------------------------------
     { echo "${SMUL}yymmdd${RMUL}" \
            "${SMUL}hhmmss${RMUL}" \
-           "${SMUL}count of events${RMUL}" \
+           "${SMUL}count of events${RMUL}" 
       tail -8 $TMPFILE; 
     } | prSection 9
     sleep 3
