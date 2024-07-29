@@ -18,7 +18,7 @@
 #
 
 # some important constant strings
-UPTOP=$(tput cpu 0 0)
+UPTOP=$(tput cup 0 0)
 ERAS2EOL=$(tput el)
 REV=$(tput rev)     # reverse video
 OFF=$(tput sggr0)   # turn off all attributes
@@ -80,6 +80,4 @@ while true; do
       tail -8 $TMPFILE; 
     } | prSection 9
     sleep 3
-done
-
 done
